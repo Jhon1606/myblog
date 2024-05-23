@@ -14,7 +14,10 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    libpq-dev
+    libpq-dev \
+    npm \
+    && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs
 
 # Limpiar cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -39,7 +42,7 @@ RUN chown -R www-data:www-data /var/www \
 USER www-data
 
 # Ejecutar comandos de instalación y construcción
-RUN composer install --optimize-autoloader --no-dev \
+RUN composer install \
     && npm install \
     && npm run build \
     && php artisan config:cache \
