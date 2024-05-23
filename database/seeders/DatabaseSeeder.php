@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
@@ -16,13 +17,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Trunca la tabla de usuarios antes de sembrar nuevos datos
+        DB::table('users')->truncate();
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        
+
         // Le decimos que al ejecutar el seeder se elimine la carpeta posts de las imágenes con el método 
         // deleteDirectory para evitar que cada vez que se ejecute se creen 
         // más imágenes (Al ejecutar los seeders no se eliminan las imágenes, 
