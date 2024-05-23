@@ -15,7 +15,6 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpq-dev \
-    npm \
     && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get install -y nodejs
 
@@ -42,12 +41,19 @@ RUN chown -R www-data:www-data /var/www \
 USER www-data
 
 # Ejecutar comandos de instalación y construcción
-RUN composer install \
+RUN echo "Ejecutando composer install" \
+    && composer install \
+    && echo "Ejecutando npm install" \
     && npm install \
+    && echo "Ejecutando npm run build" \
     && npm run build \
+    && echo "Ejecutando php artisan config:cache" \
     && php artisan config:cache \
+    && echo "Ejecutando php artisan route:cache" \
     && php artisan route:cache \
+    && echo "Ejecutando php artisan view:cache" \
     && php artisan view:cache \
+    && echo "Ejecutando php artisan migrate --force" \
     && php artisan migrate --force
 
 # Exponer el puerto 9000 y comenzar el servidor php-fpm
