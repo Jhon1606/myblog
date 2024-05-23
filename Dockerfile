@@ -15,12 +15,8 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpq-dev \
-    && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get install -y libpq-dev # Instalar las dependencias de PostgreSQL
-
-# Limpiar cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Instalar extensiones de PHP
 RUN docker-php-ext-install pdo pdo_pgsql pgsql
