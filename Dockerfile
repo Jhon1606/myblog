@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpq-dev \
-    nodejs \
+    nodejs \ 
+    npm \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Instalar extensiones de PHP
