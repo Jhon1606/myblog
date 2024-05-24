@@ -39,8 +39,8 @@ class DatabaseSeeder extends Seeder
         Tag::factory(8)->create();
         $this->call(PostSeeder::class);
         // Al ejecutar php artisan migrate:fresh --seed elimina todos los datos y los vuelve a crear
-        // Y se ejecutan los seeders, los seeders llaman a el factory mediante el metodo factory() para
-        // crear respectivos datos con los parametros dados en los factories como por ejemplo 
+        // Y se ejecutan los seeders, los seeders llaman a el factory mediante el método factory() para
+        // crear respectivos datos con los parámetros dados en los factories como por ejemplo 
         // 'name' = $this->faker->unique()->word(20); en el modelo tags
     }
 }

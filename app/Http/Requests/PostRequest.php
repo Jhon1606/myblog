@@ -13,9 +13,9 @@ class PostRequest extends FormRequest
     {   // En caso se mande el user_id por el formulario, asi se valida que 
         //el id del usuario sea el mismo id de usuario que esta logueado
 
-        if($this->user_id == auth()->user()->id){
+        if ($this->user_id == auth()->user()->id) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -31,12 +31,12 @@ class PostRequest extends FormRequest
 
         $rules = [
             'name' => 'required',
-            'slug' => 'required|unique:posts,slug,' . $post->id,
+            'slug' => 'required',
             'status' => 'required|in:1,2', // Solo se puede mandar el valor de 1 y 2
             'file' => 'image'
         ];
 
-        if($this->status == 2){
+        if ($this->status == 2) {
             // El array_merge es para unir 2 arrays, en caso que el status sea 2 se hace esto para agregar
             // más reglas de validación
             $rules = array_merge($rules, [
