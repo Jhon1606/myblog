@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    
+
     public function index()
-    {   
+    {
         $posts = Post::all();
         return view('admin.posts.index', compact('posts'));
     }
@@ -30,7 +30,7 @@ class PostController extends Controller
         // $categories = Category::pluck('name','id');
         $tags = Tag::all();
         $categories = Category::all();
-        return view('admin.posts.create', compact('categories','tags'));
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -38,10 +38,10 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-       
+
         $post = Post::create($request->all());
 
-        if($request->file('file')){
+        if ($request->file('file')) {
             // Con Storage::put('posts', $request->file('file')) decimos que guarde el archivo en la carpeta public/storage/posts
             $url = Storage::put('public/posts', $request->file('file'));
             // Accedemos a la relación image y le decimos que guarde la url
@@ -52,10 +52,10 @@ class PostController extends Controller
 
         // Como la tabla post no tiene un campo llamado tags, sino que es una relación muchos a muchos, se llama
         // a la relación del modelo Post "tags()" para que el valor de tags lo agregue (con attach()) a la tabla post_tag que es el pivot (relación)
-        if ($request->tags){
+        if ($request->tags) {
             $post->tags()->attach($request->tags);
         }
-        
+
 
         //? Otra forma de hacerlo
         // $post = new Post();
@@ -67,10 +67,10 @@ class PostController extends Controller
         // $post->tags = $request->tags;
         // $post->user_id = auth()->user()->id;
 
-        return redirect()->route('admin.posts.index')->with('info','La publicación se ha creado exitosamente');
+        return redirect()->route('admin.posts.index')->with('info', 'La publicación se ha creado exitosamente');
     }
 
-    
+
     public function show(Post $post)
     {
         //
@@ -91,14 +91,30 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
-        
+        $post->update($request->all());
+        if ($request->file('file')) {
+            $url = Storage::put('public/posts', $request->file('file'));
+
+            if ($post->image) {
+                Storage::delete($post->image->url);
+                $post->image()->update([
+                    'url' => $url
+                ]);
+            } else {
+                $post->image()->create([
+                    'url' => $url
+                ]);
+            }
+        }
+        if ($request->tags) {
+            $post->tags()->attach($request->tags);
+        }
+        return redirect()->route('admin.posts.edit', $post)->with('info', 'La publicación se actualizó con éxito');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect()->route('admin.posts.index')->with('info', 'La publicación se eliminó con éxito');
     }
 }
