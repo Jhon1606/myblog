@@ -7,7 +7,8 @@
 </div>
 
 <div class="form-group">
-    <input class="form-control" name="slug" id="slug" readonly @if ($issetPost) value="{{$post->slug}}" @endif type="hidden">
+    <label for="slug">Slug: </label>
+    <input class="form-control" name="slug" id="slug" readonly @if ($issetPost) value="{{$post->slug}}" @endif type="text">
     @error('slug')
         <span class="text-danger">{{$message}}</span>
     @enderror
@@ -36,13 +37,12 @@
 <div class="form-group">
     <p class="font-weight-bold">Etiquetas:</p>
     <div class="form-check">
-        @foreach ($tags as $tag)   
-        {{-- El checkbox deja que uno pueda escoger varios, cada nombre e id es único, por eso
-            se le manda en el name el tags[] y en el id tags{{$tags->id}} para que acceda al id del tag --}}
-        <input class="form-check-input" type="checkbox" value="{{$tag->id}}" name="tags[]" id="tags{{$tag->id}}">
-        <label class="form-check-label mr-4">
-            {{$tag->name}}
-        </label> 
+        @foreach ($tags as $tag)
+            <input class="form-check-input" type="checkbox" value="{{$tag->id}}" name="tags[]" id="tags{{$tag->id}}"
+        @if ($issetPost && in_array($tag->id, $post->tags->pluck('id')->toArray())) checked @endif>
+            <label class="form-check-label mr-4">
+                {{$tag->name}}
+            </label>
         @endforeach
     </div>
     @error('tags')
@@ -61,6 +61,15 @@
                     Borrador
                 </label>
                 <input class="form-check-input" type="radio" value="2" checked name="status" id="status">
+                <label class="form-check-label mr-4" for="flexRadioDefault1">
+                    Publicado
+                </label>
+            @else
+                <input class="form-check-input" type="radio" value="1" checked name="status" id="status">
+                <label class="form-check-label mr-4" for="flexRadioDefault1">
+                    Borrador
+                </label>
+                <input class="form-check-input" type="radio" value="2" name="status" id="status">
                 <label class="form-check-label mr-4" for="flexRadioDefault1">
                     Publicado
                 </label>
@@ -86,11 +95,15 @@
     <div class="col">
         <div class="image-wrapper">
             @if ($issetPost) 
-                <img id="picture" src="{{Storage::url($post->image->url)}}" alt="">
+            {{-- Le preguntamos si existe una imagen, ya que puede que no exista si se puso borrador y no escogió un img --}}
+                @if ($post->image)
+                    <img id="picture" src="{{Storage::url($post->image->url)}}" alt="">
+                @else
+                    <img id="picture" src="https://cdn.pixabay.com/photo/2023/08/18/15/02/cat-8198720_1280.jpg" alt="ImagenGato">
+                @endif
             @else
                 <img id="picture" src="https://cdn.pixabay.com/photo/2023/08/18/15/02/cat-8198720_1280.jpg" alt="ImagenGato">
             @endif
-
         </div>
     </div>
     <div class="col">

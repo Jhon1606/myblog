@@ -7,11 +7,17 @@
 @endsection
 
 @section('content')   
+    @if (session('info'))
+        <div class="alert alert-success">
+            <strong>{{session('info')}}</strong>
+        </div>
+    @endif
     <div class="card">
         <div class="card-body">
             <form action="{{route('admin.posts.update', $post->id)}}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('put')
+                <input type="hidden" name="user_id" id="user_id" value="{{auth()->user()->id}}">
                 @include('admin.posts.partials.form',[
                     'issetPost' => true,
                 ])
